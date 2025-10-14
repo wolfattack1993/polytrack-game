@@ -3,40 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Track Racer</title>
+    <title>PolyTrack (Offline)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #0c1424;
+            background-color: #0a192f; /* Dark Navy Blue */
             color: #ffffff;
             overflow: hidden;
+            transition: background-color 0.3s ease;
         }
-        .auth-form-container {
-            background-color: rgba(42, 58, 90, 0.8);
-            border: 2px solid #4f6a9c;
-            padding: 2rem;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 400px;
-        }
-        .auth-input {
-            background-color: #0c1424;
-            border: 2px solid #4f6a9c;
-            color: #d0e0ff;
-        }
-        .auth-button {
-             background-color: #4f6a9c;
-             border: 2px solid #8aa8e5;
-             transition: background-color 0.2s;
-        }
-        .auth-button:hover {
-            background-color: #8aa8e5;
+        .title-glow {
+            font-family: 'Press Start 2P', cursive;
+            color: #e6f7ff;
+            text-shadow:
+                0 0 7px #00b8ff,
+                0 0 10px #00b8ff,
+                0 0 21px #00b8ff,
+                0 0 42px #00b8ff,
+                0 0 82px #00b8ff,
+                0 0 92px #00b8ff,
+                0 0 102px #00b8ff,
+                0 0 151px #00b8ff;
         }
         .menu-btn {
-            background-color: #2a3a5a;
-            border: 2px solid #4f6a9c;
+            background-color: #172a45;
+            border: 2px solid #304a6e;
             width: 120px;
             height: 100px;
             border-radius: 8px;
@@ -45,10 +38,12 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease-in-out;
+            color: #a8b2d1;
         }
         .menu-btn:hover, .menu-btn.active {
-            background-color: #4f6a9c;
-            border-color: #8aa8e5;
+            background-color: #304a6e;
+            border-color: #5691c8;
+            color: #e6f7ff;
         }
         .menu-btn svg {
             width: 40px;
@@ -56,39 +51,42 @@
             margin-bottom: 8px;
         }
         .icon-btn {
-            background-color: #2a3a5a;
-            border: 2px solid #4f6a9c;
+            background-color: #172a45;
+            border: 2px solid #304a6e;
             padding: 8px;
             border-radius: 8px;
             transition: all 0.2s ease-in-out;
         }
         .icon-btn:hover {
-             background-color: #4f6a9c;
+             background-color: #304a6e;
+        }
+         .icon-btn:disabled {
+            background-color: #1a243a;
+            border-color: #2a3a5a;
+            cursor: not-allowed;
         }
          .icon-btn svg {
             width: 24px;
             height: 24px;
         }
-
         #right-palette {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             right: 16px;
-            background-color: rgba(12, 20, 36, 0.8);
-            border: 2px solid #4f6a9c;
+            background-color: rgba(10, 25, 47, 0.8);
+            border: 2px solid #304a6e;
             padding: 8px;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        
         #right-palette .block-item {
             width: 60px;
             height: 60px;
-            background-color: #2a3a5a;
-            border: 2px solid #4f6a9c;
+            background-color: #172a45;
+            border: 2px solid #304a6e;
             border-radius: 4px;
             cursor: pointer;
             display: flex;
@@ -96,80 +94,87 @@
             justify-content: center;
             position: relative;
         }
-        
         #right-palette .block-item.selected {
-            border-color: #8aa8e5;
-            background-color: #4f6a9c;
+            border-color: #5691c8;
+            background-color: #304a6e;
         }
-
         #right-palette .block-item .block-preview {
-            background-color: #808080; /* Default straight color */
+            background-color: #a8b2d1;
             position: relative;
         }
         #right-palette .block-item .block-preview-straight { width: 80%; height: 20%;}
-        #right-palette .block-item .block-preview-corner { width: 50%; height: 50%; border-top: 5px solid #808080; border-left: 5px solid #808080; background: none; position: absolute; top: 25%; left: 25%;}
+        #right-palette .block-item .block-preview-corner { width: 50%; height: 50%; border-top: 5px solid #a8b2d1; border-left: 5px solid #a8b2d1; background: none; position: absolute; top: 25%; left: 25%;}
         #right-palette .block-item .block-preview-ramp { width: 80%; height: 40%; clip-path: polygon(0 100%, 100% 0, 100% 100%); }
-
-         #top-toolbar {
+        #top-toolbar {
             position: absolute;
             top: 16px;
             left: 16px;
             display: flex;
             gap: 8px;
-            background-color: rgba(12, 20, 36, 0.8);
+            background-color: rgba(10, 25, 47, 0.8);
             padding: 8px;
             border-radius: 8px;
-            border: 2px solid #4f6a9c;
+            border: 2px solid #304a6e;
         }
+        .color-picker-panel {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(10, 25, 47, 0.8);
+            border: 2px solid #304a6e;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .color-picker-panel label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .color-picker-panel input[type="color"] {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .color-picker-panel input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker-panel input[type="color"]::-webkit-color-swatch { border: 2px solid #5691c8; border-radius: 50%; }
+        .settings-panel {
+            background-color: rgba(23, 42, 69, 0.8);
+            border: 2px solid #304a6e;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .settings-color-picker {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 50px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            border: 2px solid #5691c8;
+        }
+        .settings-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+        .settings-color-picker::-webkit-color-swatch { border: none; border-radius: 6px; }
     </style>
 </head>
 <body class="w-screen h-screen">
 
-    <!-- 3D Canvas -->
     <canvas id="bg-canvas" class="absolute top-0 left-0 w-full h-full z-0"></canvas>
 
-    <!-- UI Views -->
     <div id="ui-container" class="absolute top-0 left-0 w-full h-full z-10 p-4 sm:p-8 flex items-center justify-center">
-
-        <!-- Auth UI -->
-        <div id="auth-ui" class="hidden">
-            <div class="auth-form-container">
-                <!-- Login Form -->
-                <form id="login-form">
-                    <h2 class="text-3xl text-center mb-6 text-cyan-300">Login</h2>
-                    <input id="login-email" type="email" placeholder="Email" class="w-full p-2 mb-4 rounded auth-input" required>
-                    <input id="login-password" type="password" placeholder="Password" class="w-full p-2 mb-4 rounded auth-input" required>
-                    <button type="submit" class="w-full p-2 rounded auth-button">Login</button>
-                    <p id="login-error" class="text-red-400 text-center mt-2"></p>
-                    <p class="text-center mt-4">
-                        No account? <a href="#" id="show-signup" class="text-cyan-300 hover:underline">Sign Up</a>
-                    </p>
-                </form>
-
-                <!-- Signup Form -->
-                <form id="signup-form" class="hidden">
-                    <h2 class="text-3xl text-center mb-6 text-cyan-300">Sign Up</h2>
-                    <input id="signup-email" type="email" placeholder="Email" class="w-full p-2 mb-4 rounded auth-input" required>
-                    <input id="signup-password" type="password" placeholder="Password" class="w-full p-2 mb-4 rounded auth-input" required>
-                    <button type="submit" class="w-full p-2 rounded auth-button">Sign Up</button>
-                    <p id="signup-error" class="text-red-400 text-center mt-2"></p>
-                    <p class="text-center mt-4">
-                        Already have an account? <a href="#" id="show-login" class="text-cyan-300 hover:underline">Login</a>
-                    </p>
-                </form>
-                
-                 <button id="guest-btn" class="w-full p-2 mt-4 rounded auth-button bg-gray-600 border-gray-500">Continue as Guest</button>
-            </div>
-        </div>
 
         <!-- Main Menu -->
         <div id="main-menu" class="hidden text-center">
-            <div id="user-info" class="absolute top-4 right-4 text-right">
-                <p id="user-email" class="text-cyan-300"></p>
-                <button id="logout-btn" class="icon-btn px-4 py-2 mt-1">Logout</button>
-            </div>
-
-            <h1 class="text-8xl font-bold tracking-wider mb-12" style="color: #d0e0ff; text-shadow: 0 0 10px #8aa8e5, 0 0 20px #8aa8e5;">PolyTrack</h1>
+            <h1 class="text-8xl font-bold tracking-wider mb-12 title-glow">PolyTrack</h1>
             <div class="flex flex-row space-x-4">
                 <button id="customize-btn" class="menu-btn">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
@@ -183,27 +188,16 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <span>Settings</span>
                 </button>
-                <button id="profile-btn" class="menu-btn">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <span>Profile</span>
-                </button>
                 <button id="play-btn" class="menu-btn">
                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <span>Play</span>
                 </button>
-            </div>
-             <div class="mt-8">
-                <input id="track-id-input" type="text" placeholder="Enter Track ID to load" class="bg-gray-800 border-2 border-cyan-400 text-yellow-300 p-2 text-center rounded">
-                <button id="load-track-btn" class="icon-btn px-4 py-2 ml-2">Load</button>
             </div>
         </div>
 
         <!-- Builder UI -->
         <div id="builder-ui" class="hidden w-full h-full">
             <div id="top-toolbar">
-                 <button id="builder-save-btn" class="icon-btn" title="Save">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                 </button>
                  <button id="builder-race-btn" class="icon-btn" title="Test Race">
                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                  </button>
@@ -211,13 +205,7 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                  </button>
             </div>
-            <div id="right-palette">
-                <!-- Blocks will be populated by JS -->
-            </div>
-            <div class="absolute bottom-4 left-4 glass-panel p-2 rounded-lg text-center">
-                <p>Track ID</p>
-                <p id="builder-track-id" class="text-yellow-300">-</p>
-            </div>
+            <div id="right-palette"></div>
         </div>
 
         <!-- Race UI -->
@@ -234,120 +222,57 @@
             </div>
         </div>
         
-        <!-- Code UI -->
-        <div id="code-ui" class="hidden w-full h-full flex flex-col items-center justify-center p-4">
-             <div class="w-full max-w-4xl h-full flex flex-col">
-                <h2 class="text-3xl text-center mb-4">LUA SCRIPT EDITOR</h2>
-                <textarea id="lua-code" class="w-full h-full flex-1 bg-black text-green-400 font-mono p-4 border-4 border-cyan-400 rounded-lg outline-none" spellcheck="false">
--- Welcome to the Lua Coder!
--- This is a space to design logic for your car or track.
--- NOTE: Code execution is not implemented in this demo.
-
-function onStart()
-    -- This function could run when the race starts
-    car.setBoost(1.5)
-    print("Race started! Boost enabled.")
-end
-
-function onCollision(other_object)
-    -- This could trigger when your car hits something
-    if other_object.type == "Booster" then
-        car.addSpeed(50)
-    end
-end
-                </textarea>
-                <div class="mt-4 flex justify-center space-x-4">
-                    <button id="code-run-btn" class="icon-btn px-6 py-3">Run (Simulated)</button>
-                    <button id="code-exit-btn" class="icon-btn px-6 py-3">Exit</button>
-                </div>
-            </div>
+        <!-- Customize UI -->
+        <div id="customize-ui" class="hidden w-full h-full flex flex-col items-center justify-center">
+             <h1 class="text-6xl font-bold tracking-wider mb-12 title-glow">Customize Car</h1>
+             <div id="top-toolbar">
+                  <button id="customize-exit-btn" class="icon-btn" title="Back to Menu">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                 </button>
+             </div>
+             <div class="color-picker-panel">
+                <label>
+                    Body
+                    <input type="color" id="body-color-picker" value="#ff0000">
+                </label>
+                <label>
+                    Cabin
+                    <input type="color" id="cabin-color-picker" value="#000000">
+                </label>
+             </div>
         </div>
+
+        <!-- Settings UI -->
+        <div id="settings-ui" class="hidden w-full h-full flex flex-col items-center justify-center">
+            <h1 class="text-6xl font-bold tracking-wider mb-12 title-glow">Settings</h1>
+            <div id="top-toolbar">
+                 <button id="settings-exit-btn" class="icon-btn" title="Back to Menu">
+                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
+            </div>
+            <div class="settings-panel">
+               <h2 class="text-2xl text-center mb-6 text-cyan-300">Appearance</h2>
+               <div class="flex justify-between items-center">
+                   <label for="bg-color-picker" class="text-lg">Menu Background</label>
+                   <input type="color" id="bg-color-picker" class="settings-color-picker" value="#0a192f">
+               </div>
+            </div>
+       </div>
 
     </div>
 
     <script type="module">
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
         import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        // --- Firebase Setup ---
-        let db, auth;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'retro-racer-default';
-        
-        try {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-
-            onAuthStateChanged(auth, user => {
-                if (user) {
-                    // User is signed in.
-                    console.log("User signed in:", user.uid);
-                    document.getElementById('user-email').textContent = user.isAnonymous ? 'Guest' : user.email;
-                    document.getElementById('logout-btn').classList.toggle('hidden', user.isAnonymous);
-                    initMenu();
-                } else {
-                    // User is signed out.
-                    console.log("User signed out.");
-                    initAuth();
-                }
-            });
-        } catch (e) {
-            console.error("Firebase config not found or invalid. Firestore features will be disabled.", e);
-            alert("Could not connect to the game services. Please try again later.");
-        }
-
-        async function saveTrack(trackData) {
-            if (!db) {
-                alert("Database not connected. Cannot save track.");
-                return null;
-            }
-            try {
-                // For simplicity, all tracks are public for now.
-                const docRef = await addDoc(collection(db, `artifacts/${appId}/public/data/tracks`), {
-                    data: JSON.stringify(trackData),
-                    owner: auth.currentUser ? auth.currentUser.uid : 'anonymous'
-                });
-                console.log("Track saved with ID: ", docRef.id);
-                return docRef.id;
-            } catch (e) {
-                console.error("Error saving track: ", e);
-                return null;
-            }
-        }
-
-        async function loadTrack(trackId) {
-            if (!db) {
-                alert("Database not connected. Cannot load track.");
-                return null;
-            }
-            try {
-                const docRef = doc(db, `artifacts/${appId}/public/data/tracks`, trackId);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    return JSON.parse(docSnap.data().data);
-                } else {
-                    console.log("No such track!");
-                    alert("Track ID not found.");
-                    return null;
-                }
-            } catch (e) {
-                console.error("Error loading track: ", e);
-                return null;
-            }
-        }
 
         // --- Basic Setup ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true });
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        const clearColorMenu = 0x0c1424;
+        const clearColorMenu = 0x0a192f;
         const clearColorBuilder = 0xcde0f0;
-        renderer.setClearColor(clearColorMenu);
+        renderer.setClearColor(clearColorMenu, 0);
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -357,7 +282,7 @@ end
 
         // --- Global State ---
         let controls;
-        let currentState = 'AUTH'; // Start at auth screen
+        let currentState = 'MENU';
         let cars = [];
         let playerCarIndex = 0;
         let gridHelper, plane;
@@ -365,7 +290,11 @@ end
         scene.add(trackObjects);
         let raceStartTime = 0;
         let raceTimerInterval;
-        let currentTrackId = null;
+        let previewCar = null;
+        let playerCarColors = {
+            body: '#ff0000',
+            cabin: '#000000'
+        };
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -465,21 +394,21 @@ end
 
 
         // --- Car ---
-        function createCar(color = 0xff0000) {
+        function createCar(colors) {
             const carGroup = new THREE.Group();
-            const bodyMat = new THREE.MeshStandardMaterial({ color, roughness: 0.3 });
+            
+            const bodyMat = new THREE.MeshStandardMaterial({ color: colors.body, roughness: 0.3 });
             const bodyGeom = new THREE.BoxGeometry(1.5, 0.8, 3);
             const body = new THREE.Mesh(bodyGeom, bodyMat);
             body.position.y = 0.8;
             carGroup.add(body);
 
-            const cabinMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
+            const cabinMat = new THREE.MeshStandardMaterial({ color: colors.cabin });
             const cabinGeom = new THREE.BoxGeometry(1.3, 0.6, 1.5);
-            const cabin = new THREE.Mesh(cabinGeom, cabinGeom);
+            const cabin = new THREE.Mesh(cabinGeom, cabinMat);
             cabin.position.set(0, 1.5, -0.2);
             carGroup.add(cabin);
             
-            // Attach physics properties
             carGroup.userData.velocity = new THREE.Vector3();
             carGroup.userData.steering = 0;
 
@@ -488,11 +417,11 @@ end
 
         // --- UI Switching ---
         const views = {
-            'AUTH': document.getElementById('auth-ui'),
             'MENU': document.getElementById('main-menu'),
             'BUILDER': document.getElementById('builder-ui'),
             'RACE': document.getElementById('race-ui'),
-            'CODE': document.getElementById('code-ui'),
+            'CUSTOMIZE': document.getElementById('customize-ui'),
+            'SETTINGS': document.getElementById('settings-ui'),
         };
 
         function switchUi(state) {
@@ -504,15 +433,11 @@ end
         }
         
         // --- Modes ---
-        function initAuth() {
-            switchUi('AUTH');
-        }
-
         function initMenu() {
             switchUi('MENU');
             camera.position.set(10, 10, 15);
             camera.lookAt(0, 0, 0);
-            renderer.setClearColor(clearColorMenu);
+            renderer.setClearColor(clearColorMenu, 0);
             if (controls) {
                 controls.dispose();
                 controls = null;
@@ -523,7 +448,7 @@ end
             switchUi('BUILDER');
             camera.position.set(0, 30, 0);
             camera.lookAt(0, 0, 0);
-            renderer.setClearColor(clearColorBuilder);
+            renderer.setClearColor(clearColorBuilder, 1);
             
             if (controls) controls.dispose();
             controls = new OrbitControls(camera, renderer.domElement);
@@ -554,25 +479,25 @@ end
             gridHelper = null;
             placementIndicator = null;
             clearTrack();
-            renderer.setClearColor(clearColorMenu);
+            renderer.setClearColor(clearColorMenu, 0);
             initMenu();
         }
 
-        async function initRace(trackData) {
+        function initRace(trackData) {
             switchUi('RACE');
+            renderer.setClearColor(clearColorBuilder, 1);
             if (controls) {
                 controls.dispose();
                 controls = null;
             }
             
             clearTrack();
-            if (trackData) {
+            if (trackData && trackData.length > 0) {
                 buildTrackFromData(trackData);
             } else {
                 buildDemoTrack();
             }
 
-            // Clear previous cars
             cars.forEach(car => scene.remove(car));
             cars = [];
 
@@ -580,27 +505,50 @@ end
             const startPosition = startBlock ? startBlock.position.clone() : new THREE.Vector3(0,0,0);
             const startRotation = startBlock ? startBlock.rotation.clone() : new THREE.Euler(0,0,0);
 
-            // Create Player Car
-            const playerCar = createCar(0xff0000); // Red for player
+            const playerCar = createCar(playerCarColors);
             playerCar.position.copy(startPosition);
             playerCar.position.y = 1.0;
-            playerCar.position.x -= 1; // Start slightly to the left
             playerCar.rotation.copy(startRotation);
             cars.push(playerCar);
             scene.add(playerCar);
-
-            // Create Opponent Cars for demonstration
-            for (let i = 0; i < 3; i++) {
-                const opponentCar = createCar(0x0000ff); // Blue for opponents
-                opponentCar.position.copy(startPosition);
-                opponentCar.position.y = 1.0;
-                opponentCar.position.x += 1 + (i * 2); // Spread them out
-                opponentCar.rotation.copy(startRotation);
-                cars.push(opponentCar);
-                scene.add(opponentCar);
-            }
             
             showMessage("3", 500, () => showMessage("2", 500, () => showMessage("1", 500, () => showMessage("GO!", 500, startRace))));
+        }
+        
+        function initCustomize() {
+            switchUi('CUSTOMIZE');
+            renderer.setClearColor(clearColorMenu, 0);
+            camera.position.set(0, 2, 8);
+            camera.lookAt(0, 1, 0);
+
+            if (controls) controls.dispose();
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.target.set(0, 1, 0);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+            
+            if (previewCar) scene.remove(previewCar);
+            previewCar = createCar(playerCarColors);
+            scene.add(previewCar);
+        }
+
+        function exitCustomize() {
+            if (previewCar) scene.remove(previewCar);
+            previewCar = null;
+            initMenu();
+        }
+
+        function initSettings() {
+            switchUi('SETTINGS');
+            renderer.setClearColor(clearColorMenu, 0);
+             if (controls) {
+                controls.dispose();
+                controls = null;
+            }
+        }
+
+        function exitSettings() {
+            initMenu();
         }
 
         function showMessage(text, duration, callback) {
@@ -634,11 +582,6 @@ end
             initMenu();
         }
 
-        function initCode() {
-            switchUi('CODE');
-        }
-
-        // --- Track Building Logic ---
         function clearTrack() {
             while (trackObjects.children.length) {
                 trackObjects.remove(trackObjects.children[0]);
@@ -672,64 +615,24 @@ end
                 {type: 'Start', pos: {x: 0, y: 0, z: 0}, rot: 0},
                 {type: 'Straight', pos: {x: 0, y: 0, z: -4}, rot: 0},
                 {type: 'Corner', pos: {x: 0, y: 0, z: -8}, rot: -1.5707963267948966},
-                {type: 'Straight', pos: {x: -4, y: 0, z: -8}, rot: -1.5707963267948966},
-                {type: 'Ramp', pos: {x: -8, y: 0, z: -8}, rot: -1.5707963267948966},
-                {type: 'Straight', pos: {x: -12, y: 0, z: -8}, rot: -1.5707963267948966},
-                {type: 'Corner', pos: {x: -16, y: 0, z: -8}, rot: -3.141592653589793},
-                {type: 'Straight', pos: {x: -16, y: 0, z: -4}, rot: -3.141592653589793},
-                {type: 'Corner', pos: {x: -16, y: 0, z: 0}, rot: 1.5707963267948966},
-                {type: 'Straight', pos: {x: -12, y: 0, z: 0}, rot: 1.5707963267948966},
-                {type: 'Straight', pos: {x: -8, y: 0, z: 0}, rot: 1.5707963267948966},
-                {type: 'Corner', pos: {x: -4, y: 0, z: 0}, rot: 0},
+                {type: 'Corner', pos: {x: -4, y: 0, z: -8}, rot: -3.141592653589793},
+                {type: 'Straight', pos: {x: -4, y: 0, z: -4}, rot: -3.141592653589793},
+                {type: 'Corner', pos: {x: -4, y: 0, z: 0}, rot: 1.5707963267948966},
             ];
             buildTrackFromData(demoData);
         }
 
         // --- Event Listeners ---
-
-        // Auth Listeners
-        document.getElementById('show-signup').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('signup-form').classList.remove('hidden');
-        });
-        document.getElementById('show-login').addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('signup-form').classList.add('hidden');
-            document.getElementById('login-form').classList.remove('hidden');
-        });
-        document.getElementById('guest-btn').addEventListener('click', () => {
-            signInAnonymously(auth).catch(err => console.error(err));
-        });
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            signOut(auth);
-        });
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            signInWithEmailAndPassword(auth, email, password)
-                .catch(err => document.getElementById('login-error').textContent = err.message);
-        });
-        document.getElementById('signup-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            createUserWithEmailAndPassword(auth, email, password)
-                 .catch(err => document.getElementById('signup-error').textContent = err.message);
-        });
-
-        // Main Menu Listeners
         document.getElementById('editor-btn').addEventListener('click', () => initBuilder());
-        document.getElementById('play-btn').addEventListener('click', () => initRace(null));
-        document.getElementById('profile-btn').addEventListener('click', () => alert("Profile feature coming soon!"));
-        document.getElementById('settings-btn').addEventListener('click', () => alert("Settings feature coming soon!"));
-        document.getElementById('customize-btn').addEventListener('click', () => alert("Customize feature coming soon!"));
+        document.getElementById('play-btn').addEventListener('click', () => initRace(getTrackData()));
+        document.getElementById('settings-btn').addEventListener('click', () => initSettings());
+        document.getElementById('customize-btn').addEventListener('click', () => initCustomize());
         
-        document.getElementById('code-btn')?.addEventListener('click', () => initCode()); // Keep old one just in case
+        document.getElementById('customize-exit-btn').addEventListener('click', exitCustomize);
         document.getElementById('builder-exit-btn').addEventListener('click', exitBuilder);
         document.getElementById('race-exit-btn').addEventListener('click', exitRace);
-        document.getElementById('code-exit-btn').addEventListener('click', initMenu);
+        document.getElementById('settings-exit-btn').addEventListener('click', exitSettings);
+        
         document.getElementById('builder-race-btn').addEventListener('click', () => {
              const trackData = getTrackData();
             if (trackData.length > 0) {
@@ -737,36 +640,25 @@ end
                  initRace(trackData);
             }
         });
-        document.getElementById('builder-save-btn').addEventListener('click', async () => {
-             const trackData = getTrackData();
-             if(trackData.length === 0) {
-                 alert("Track is empty!");
-                 return;
-             }
-             const id = await saveTrack(trackData);
-             if(id) {
-                 currentTrackId = id;
-                 document.getElementById('builder-track-id').textContent = id;
-                 alert(`Track saved! Share this ID: ${id}`);
-             }
-        });
-         document.getElementById('load-track-btn').addEventListener('click', async () => {
-            const id = document.getElementById('track-id-input').value.trim();
-            if (id) {
-                const trackData = await loadTrack(id);
-                if (trackData) {
-                    currentTrackId = id;
-                    initBuilder();
-                    buildTrackFromData(trackData);
-                    document.getElementById('builder-track-id').textContent = id;
-                }
-            } else {
-                alert("Please enter a Track ID.");
+        
+        const bodyColorPicker = document.getElementById('body-color-picker');
+        const cabinColorPicker = document.getElementById('cabin-color-picker');
+        const bgColorPicker = document.getElementById('bg-color-picker');
+
+        bodyColorPicker.addEventListener('input', (event) => {
+            playerCarColors.body = event.target.value;
+            if (previewCar) {
+                previewCar.children[0].material.color.set(playerCarColors.body);
             }
         });
-        document.getElementById('code-run-btn').addEventListener('click', () => {
-            alert("Code execution is simulated. Check the browser console for pretend output!");
-            console.log("Simulating Lua script run...");
+        cabinColorPicker.addEventListener('input', (event) => {
+            playerCarColors.cabin = event.target.value;
+            if (previewCar) {
+                previewCar.children[1].material.color.set(playerCarColors.cabin);
+            }
+        });
+        bgColorPicker.addEventListener('input', (event) => {
+            document.body.style.backgroundColor = event.target.value;
         });
 
         const keyState = {};
@@ -775,15 +667,8 @@ end
 
         function updatePlayerCar(car, deltaTime) {
             const acceleration = 50.0;
-            const friction = 0.97;
-            const steeringSpeed = 2.5;
             const maxSpeed = 30.0;
-            const maxSteering = 0.5;
-
             let { velocity, steering } = car.userData;
-
-            // Acceleration/Braking
-            let forwardSpeed = car.worldToLocal(car.position.clone().add(velocity)).z;
             
             if (keyState['ArrowUp'] || keyState['KeyW']) {
                 velocity.add(car.getWorldDirection(new THREE.Vector3()).multiplyScalar(acceleration * deltaTime));
@@ -792,93 +677,44 @@ end
                 velocity.add(car.getWorldDirection(new THREE.Vector3()).multiplyScalar(-acceleration * deltaTime));
             }
 
-            // Steering
-            if (Math.abs(forwardSpeed) > 0.1) { // Only allow steering when moving
+            let forwardSpeed = car.worldToLocal(car.position.clone().add(velocity)).z;
+            const steeringSpeed = 2.5;
+            const maxSteering = 0.5;
+            if (Math.abs(forwardSpeed) > 0.1) { 
                 if (keyState['ArrowLeft'] || keyState['KeyA']) steering += steeringSpeed * deltaTime;
                 if (keyState['ArrowRight'] || keyState['KeyD']) steering -= steeringSpeed * deltaTime;
             }
             
-            steering *= 0.9; // Auto-center steering
+            steering *= 0.9;
             steering = Math.max(-maxSteering, Math.min(maxSteering, steering));
-            
-            car.rotation.y += steering * forwardSpeed * 0.03 * deltaTime; // Adjust rotation based on speed
+            car.rotation.y += steering * forwardSpeed * 0.03 * deltaTime;
             car.userData.steering = steering;
-        }
-
-        function updateAICar(car, deltaTime) {
-            // Simple AI: just go forward
-            const acceleration = 40.0; // Slightly slower than player
-            car.userData.velocity.add(car.getWorldDirection(new THREE.Vector3()).multiplyScalar(acceleration * deltaTime));
         }
 
         function updateCarPhysics(car, deltaTime) {
             const friction = 0.97;
             const maxSpeed = 30.0;
             let { velocity } = car.userData;
-
-            // Apply friction
             velocity.multiplyScalar(friction);
-            
-            // Clamp speed
             if (velocity.length() > maxSpeed) {
                 velocity.normalize().multiplyScalar(maxSpeed);
             }
-
             car.position.add(velocity.clone().multiplyScalar(deltaTime));
-
-            // Basic physics: Fall down
-            velocity.y -= 20.0 * deltaTime; // Gravity
-
-            // Collision with track
+            velocity.y -= 20.0 * deltaTime;
             const carDown = new THREE.Vector3(0, -1, 0);
             raycaster.set(car.position, carDown);
             const intersects = raycaster.intersectObjects(trackObjects.children, true);
-            
             if (intersects.length > 0 && intersects[0].distance < 1.1) {
                 car.position.y = intersects[0].point.y + 1.0;
-                velocity.y = 0; // Stop falling
+                velocity.y = 0;
             } else if (car.position.y < -10) {
-                 // Fell off track
                  if (cars.indexOf(car) === playerCarIndex) {
                     stopRace();
                     showMessage("FELL OFF!", 2000, exitRace);
                  } else {
-                     // Reset AI car
-                     const startBlock = trackObjects.children.find(b => b.userData.type === 'Start');
-                     if (startBlock) {
-                         car.position.copy(startBlock.position);
-                         car.position.y = 1.0;
-                         velocity.set(0,0,0);
-                     }
+                     car.position.set(0, 1.0, 0); // Respawn simple
+                     velocity.set(0,0,0);
                  }
-            }
-        }
-
-        function checkCarCollisions() {
-            const carRadius = 1.5; // Bounding circle for collision
-            for (let i = 0; i < cars.length; i++) {
-                for (let j = i + 1; j < cars.length; j++) {
-                    const car1 = cars[i];
-                    const car2 = cars[j];
-
-                    const distance = car1.position.distanceTo(car2.position);
-
-                    if (distance < carRadius * 2) {
-                        // Collision detected!
-                        const collisionNormal = new THREE.Vector3().subVectors(car2.position, car1.position).normalize();
-                        
-                        // Simple impulse resolution
-                        const relativeVelocity = new THREE.Vector3().subVectors(car2.userData.velocity, car1.userData.velocity);
-                        const velocityAlongNormal = relativeVelocity.dot(collisionNormal);
-
-                        if (velocityAlongNormal > 0) continue; // Cars are already moving apart
-
-                        const impulse = collisionNormal.multiplyScalar(-1.5 * velocityAlongNormal);
-                        
-                        car1.userData.velocity.sub(impulse);
-                        car2.userData.velocity.add(impulse);
-                    }
-                }
             }
         }
         
@@ -905,16 +741,15 @@ end
             
             const blockType = blockTypes[selectedType];
             
-            // Check if a block already exists at this position
              const existingBlock = trackObjects.children.find(b => b.position.equals(placementIndicator.position));
-             if(event.button === 0 && existingBlock) return; // Left click on existing block does nothing
+             if(event.button === 0 && existingBlock) return;
 
-            if (event.button === 0) { // Left click to place
+            if (event.button === 0) { // Left click
                 const newBlock = blockType.factory();
                 newBlock.position.copy(placementIndicator.position);
                 newBlock.userData.type = selectedType;
                 trackObjects.add(newBlock);
-            } else if (event.button === 2) { // Right click to remove
+            } else if (event.button === 2) { // Right click
                 if(existingBlock) {
                     trackObjects.remove(existingBlock);
                 }
@@ -925,7 +760,7 @@ end
             if (currentState !== 'BUILDER' || !placementIndicator.visible) return;
              const existingBlock = trackObjects.children.find(b => b.position.equals(placementIndicator.position));
              if(existingBlock) {
-                 const rotationAmount = Math.PI / 2; // 90 degrees
+                 const rotationAmount = Math.PI / 2;
                  existingBlock.rotation.y += Math.sign(event.deltaY) * rotationAmount;
              }
         }
@@ -936,7 +771,7 @@ end
         });
         window.addEventListener('mousedown', handleBuilderClick);
         window.addEventListener('wheel', handleBuilderWheel);
-        window.addEventListener('contextmenu', (e) => { // Prevent right click menu in builder
+        window.addEventListener('contextmenu', (e) => {
             if (currentState === 'BUILDER') e.preventDefault();
         });
 
@@ -952,21 +787,9 @@ end
             }
 
             if (currentState === 'RACE' && raceStartTime > 0) {
-                // Update car logic (input/AI)
                 updatePlayerCar(cars[playerCarIndex], deltaTime);
-                for(let i=0; i < cars.length; i++) {
-                    if (i !== playerCarIndex) {
-                        updateAICar(cars[i], deltaTime);
-                    }
-                }
-
-                // Check for car-on-car collisions
-                checkCarCollisions();
-
-                // Update physics for all cars
                 cars.forEach(car => updateCarPhysics(car, deltaTime));
 
-                // Camera follow player
                 const playerCar = cars[playerCarIndex];
                 const offset = new THREE.Vector3(0, 4, 8);
                 const cameraPosition = playerCar.localToWorld(offset);
@@ -977,13 +800,15 @@ end
             if (currentState === 'BUILDER') {
                 updateBuilderInteraction();
             }
+            
+            if (currentState === 'CUSTOMIZE' && previewCar) {
+                previewCar.rotation.y += 0.01;
+            }
 
             renderer.render(scene, camera);
         }
 
-        // The onAuthStateChanged listener will call initAuth() or initMenu() when ready.
-        // So we don't need to call it manually here.
-        // initMenu();
+        initMenu(); // Start the game at the main menu
         animate();
 
     </script>
